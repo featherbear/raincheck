@@ -1,5 +1,3 @@
-## Can't make an event?
-## Or, don't want to?
-## Or is it raining?
+## Plans cancelled? Or is it raining? Or both 🤷‍♂️
 
 > Idk
