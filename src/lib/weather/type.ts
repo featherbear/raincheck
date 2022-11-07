@@ -1,6 +1,7 @@
 export interface WeatherResult<T = null> {
     wmo: WMOCode
     temperature: number
+    temperatureUnit: string
     extra?: T
 }
 

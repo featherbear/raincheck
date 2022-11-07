@@ -28,20 +28,17 @@
 </script>
 
 <main>
-  <h1>Is it raining?</h1>
+  <h1>🌧 Is it raining 🌧</h1>
 
   {#if result}
-    <div>
+    <h2>
       {Question(result).isIt.raining}
-    </div>
-    <div>Temperature: {result.temperature}</div>
+    </h2>
+    <h4>Temperature: {result.temperature} {result.temperatureUnit}</h4>
   {:else}
-    <button class:loading={isLoading} disabled={isLoading}
-      >{isLoading ? "Hold on..." : "Rain Check"}</button
-    >{/if}
+    <div>🙏 Asking the rain gods...</div>
+  {/if}
 </main>
 
 <style>
-  .isLoading {
-  }
 </style>

@@ -32,7 +32,19 @@ export interface HourlyUnits {
 }
 
 
-const doRequest = async (latitude: number, longitude: number, extra: { [k: string]: string } = {}) => {
+/**
+ * Get weather data
+ * Returns a function to fetch more data (+- 1 day)
+ * 
+ * @param latitude 
+ * @param longitude 
+ * @returns 
+ */
+export const getWeatherData: WeatherProvider<OpenMeteoSample> = async (latitude, longitude) => {
+    let today = new Date()
+    let yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000)
+    let tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000)
+
     let params = new URLSearchParams({
         latitude: latitude.toString(),
         longitude: longitude.toString(),
@@ -42,41 +54,20 @@ const doRequest = async (latitude: number, longitude: number, extra: { [k: strin
         ].join(","),
         current_weather: "true",
         timezone: "auto",
-        ...extra
+        start_date: yesterday.toISOString().slice(0, 10),
+        end_date: tomorrow.toISOString().slice(0, 10)
     })
 
-    return <OpenMeteoSample>await fetch(
+    let resp = <OpenMeteoSample>await fetch(
         `https://api.open-meteo.com/v1/forecast?` + decodeURIComponent(params.toString())
     )
         .then(r => r.json())
 
-}
-
-/**
- * Get weather data
- * Returns a function to fetch more data (+- 1 day)
- * 
- * @param latitude 
- * @param longitude 
- * @returns 
- */
-export const getWeatherData: WeatherProvider<() => Promise<OpenMeteoSample>> = async (latitude, longitude) => {
-    const resp = await doRequest(latitude, longitude)
-
     return {
         temperature: resp.current_weather.temperature,
+        temperatureUnit: resp.hourly_units.temperature_2m,
         wmo: resp.current_weather.weathercode,
-        async extra() {
-            let currentBin = new Date(resp.current_weather.time)
-            let yesterday = new Date(currentBin.getTime() - 24 * 60 * 60 * 1000)
-            let tomorrow = new Date(currentBin.getTime() + 24 * 60 * 60 * 1000)
-
-            return doRequest(latitude, longitude, {
-                start_date: yesterday.toISOString().slice(0, 10),
-                end_date: tomorrow.toISOString().slice(0, 10)
-            })
-        }
-
+        extra: resp
     }
 }
 
