@@ -20,7 +20,7 @@ jobs:
 
     - name: Build
       run: |
-        npm yarn build
+        yarn build
         touch ./dist/.nojekyll
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2.3.1
